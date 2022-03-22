@@ -1,3 +1,4 @@
+import os
 import sys
 
 
@@ -16,9 +17,16 @@ class Builder:
         self._src_file_path = ""
         self._dest_file_path = ""
 
+    def _error(self, message: str) -> None:
+        print(f"ERROR: {message}")
+
     def build(self, src_file_path: str, dest_file_path: str) -> None:
         self._src_file_path = src_file_path
         self._dest_file_path = dest_file_path
+        if not os.path.exists(self._src_file_path):
+            self._error(
+                f"The source file '{self._src_file_path}' does not exists.")
+            return
 
 
 if __name__ == "__main__":
