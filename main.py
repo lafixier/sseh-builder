@@ -37,16 +37,23 @@ class Builder:
             if line_stripped.startswith("<!--") or line.startswith("//"):
                 if command_line.startswith("$build"):
                     args = command_line.lstrip("$build").lstrip().split()
-                    if len(args) != 2 or (args[0] != "develop" and args[0] != "production") and (args[1] != "begin" or args[1] != "end"):
-                        self._error(
-                            f"Line `{line}` is invalid.\nUsage:\n\t$build [develop/production] [begin/end]")
-                    else:
-                        self._build_status["mode"] = args[0]
-                        if args[1] == "begin":
-                            self._build_status["is_active"] = True
+                    command_name = args[0]
+                    if command_name == "develop" or command_name == "production":
+                        if len(args) != 2:
+                            self._error(
+                                f"Line `{line}` is invalid.\nUsage:\n\t$build [develop/production] [begin/end]")
+                            return
+                        command_arg = args[1]
+                        if command_arg == "begin" or command_arg == "end":
+                            self._build_status["mode"] = command_name
+                            if command_arg == "begin":
+                                self._build_status["is_active"] = True
+                            else:
+                                self._build_status["is_active"] = False
+                            continue
                         else:
-                            self._build_status["is_active"] = False
-                        continue
+                            self._error(
+                                f"Line `{line}` is invalid.\nUsage:\n\t$build [develop/production] [begin/end]")
             if self._build_status["is_active"]:
                 if self._build_status["mode"] == "production":
                     line_tmp = line_stripped.lstrip(
