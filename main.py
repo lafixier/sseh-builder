@@ -54,6 +54,10 @@ class Builder:
                         else:
                             self._error(
                                 f"Line `{line}` is invalid.\nUsage:\n\t$build [develop/production] [begin/end]")
+                    else:
+                        self._error(
+                            f"Line `{line}` is invalid. Unknown command '{command_name}'.")
+                        return
             if self._build_status["is_active"]:
                 if self._build_status["mode"] == "production":
                     line_tmp = line_stripped.lstrip(
