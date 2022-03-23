@@ -62,6 +62,11 @@ class Builder:
             else:
                 self._built_lines.append(line)
 
+    def _write_built_code_to_dest_file(self) -> None:
+        build_code = "\n".join(self._built_lines)
+        with open(self._dest_file_path, mode="w", encoding="utf-8") as f:
+            f.write(build_code)
+
     def build(self, src_file_path: str, dest_file_path: str) -> None:
         self._src_file_path = src_file_path
         self._dest_file_path = dest_file_path
@@ -71,6 +76,7 @@ class Builder:
             return
         self._read_src_file()
         self._build_src()
+        self._write_built_code_to_dest_file()
 
 
 if __name__ == "__main__":
