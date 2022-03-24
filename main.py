@@ -54,6 +54,7 @@ class Builder:
                         else:
                             self._error(
                                 f"Line `{line}` is invalid.\nUsage:\n\t$build [develop/production] [begin/end]")
+                            return
                     else:
                         self._error(
                             f"Line `{line}` is invalid. Unknown command '{command_name}'.")
