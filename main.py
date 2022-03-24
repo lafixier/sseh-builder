@@ -55,6 +55,28 @@ class Builder:
                             self._error(
                                 f"Line `{line}` is invalid.\nUsage:\n\t$build [develop/production] [begin/end]")
                             return
+                    elif command_name == "insert_file":
+                        if len(args) != 2:
+                            self._error(
+                                f"Line `{line}` is invalid.\nUsage:\n\t$build insert_file "+"{inserted_file_path}")
+                            return
+                        command_arg = args[1]
+                        inserted_file_path = command_arg
+                        if not os.path.exists(inserted_file_path):
+                            self._error(
+                                f"Line `{line}` is invalid. The inserted file '{inserted_file_path}' does not exists.")
+                            return
+                        with open(inserted_file_path, encoding="utf-8") as f:
+                            inserted_code = f.read()
+                        indent = ""
+                        for char in line:
+                            if char == " ":
+                                indent += " "
+                            else:
+                                break
+                        self._built_lines.append(
+                            "\n".join([indent+l for l in inserted_code.split("\n")]).rstrip())
+                        continue
                     else:
                         self._error(
                             f"Line `{line}` is invalid. Unknown command '{command_name}'.")
