@@ -1,4 +1,5 @@
 import os
+import pathlib
 import sys
 
 
@@ -20,9 +21,15 @@ class Builder:
         self._lines = []
         self._built_lines = []
         self._build_status = {"mode": "", "is_active": False}
+        self._src_file_dir = ""
 
     def _error(self, message: str) -> None:
         print(f"ERROR: {message}")
+
+    def _set_src_file_dir(self) -> None:
+        self._src_file_dir = os.path.dirname(pathlib.Path(self._src_file_path))+os.sep if os.path.dirname(
+            pathlib.Path(self._src_file_path)) != "" else ""
+        print(self._src_file_dir)
 
     def _read_src_file(self) -> None:
         with open(self._src_file_path, encoding="utf-8") as f:
@@ -61,7 +68,8 @@ class Builder:
                                 f"Line `{line}` is invalid.\nUsage:\n\t$build insert_file "+"{inserted_file_path}")
                             return
                         command_arg = args[1]
-                        inserted_file_path = command_arg
+                        inserted_file_path = self._src_file_dir + (command_arg[2:] if command_arg.startswith(
+                            "./") else command_arg)
                         if not os.path.exists(inserted_file_path):
                             self._error(
                                 f"Line `{line}` is invalid. The inserted file '{inserted_file_path}' does not exists.")
@@ -108,6 +116,7 @@ class Builder:
             self._error(
                 f"The source file '{self._src_file_path}' does not exists.")
             return
+        self._set_src_file_dir()
         self._read_src_file()
         self._build_src()
         self._write_built_code_to_dest_file()
